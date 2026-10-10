@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JOYVERSE - Worldwide Joy</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+body{background:#FFFDF5;color:#1a1a1a}
+header{padding:20px;text-align:center;position:sticky;top:0;background:rgba(255,253,245,0.9);backdrop-filter:blur(10px);z-index:10;border-bottom:1px solid #FFE9A0}
+.logo{font-size:28px;font-weight:900;letter-spacing:-1px}.logo span{color:#FFB800}
+.question{margin:24px auto;max-width:600px;background:#1a1a1a;color:white;border-radius:24px;padding:24px 28px;text-align:center}
+.post-bar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:20px auto;max-width:650px;padding:0 16px}
+.post-btn{border:none;padding:12px 18px;border-radius:100px;font-weight:700;font-size:14px;cursor:pointer}
+.btn-video{background:#FFE5E5}.btn-photo{background:#E5F3FF}.btn-text{background:#E5FFE5}.btn-line{background:#FFF2CC}
+.filters{display:flex;gap:8px;justify-content:center;margin:10px 0 20px}
+.filter{padding:8px 16px;border-radius:100px;border:1px solid #eee;background:white;cursor:pointer;font-size:13px;font-weight:600}
+.filter.active{background:#1a1a1a;color:white}
+.feed{columns:1;gap:16px;max-width:1100px;margin:0 auto;padding:0 16px 80px}
+@media(min-width:600px){.feed{columns:2}}@media(min-width:900px){.feed{columns:3}}
+.card{background:white;border:1px solid #f0e6c8;border-radius:20px;padding:16px;margin-bottom:16px;break-inside:avoid;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
+.card-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:#888}
+.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:white}
+.card img{width:100%;border-radius:14px;margin:8px 0}
+.card-text{font-size:15px;line-height:1.5;margin:8px 0}.card-line{font-size:18px;font-weight:700;font-style:italic}
+.card-actions{display:flex;justify-content:space-between;margin-top:12px}
+.heart{border:none;background:#FFF5F5;padding:8px 14px;border-radius:100px;cursor:pointer;font-weight:700;font-size:13px}
+.heart.loved{background:#FFE5E5;color:#FF2D55}.tag{font-size:11px;padding:4px 8px;background:#FFF9E5;border-radius:100px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;place-items:center;z-index:20;padding:16px}
+.modal.open{display:grid}.modal-box{background:white;border-radius:24px;padding:24px;width:100%;max-width:420px}
+.modal-box textarea,.modal-box input{width:100%;padding:12px;border-radius:12px;border:1px solid #ddd;margin:8px 0;font-size:14px}
+.publish{width:100%;background:#1a1a1a;color:white;border:none;padding:14px;border-radius:100px;font-weight:800;margin-top:12px;cursor:pointer}
+</style>
+</head>
+<body>
+<header><div class="logo">JOY<span>VERSE</span> 🌍</div></header>
+<div class="question"><h1>What gave you joy today?</h1><p>Real stories. No hate. Just human joy from around the world.</p></div>
+<div class="post-bar">
+<button class="post-btn btn-video" onclick="openModal('video')">📹 Video Story</button>
+<button class="post-btn btn-photo" onclick="openModal('photo')">📸 Photo Story</button>
+<button class="post-btn btn-text" onclick="openModal('text')">📝 Text Story</button>
+<button class="post-btn btn-line" onclick="openModal('line')">💬 One Line</button>
+</div>
+<div class="filters">
+<button class="filter active" onclick="filterFeed('all',this)">🌍 World</button>
+<button class="filter" onclick="filterFeed('today',this)">✨ Today</button>
+<button class="filter" onclick="filterFeed('loved',this)">❤️ Most Loved</button>
+</div>
+<div class="feed" id="feed"></div>
+<div class="modal" id="modal" onclick="if(event.target==this)closeModal()"><div class="modal-box">
+<h3 id="modalTitle">Share your joy</h3>
+<input id="inpName" placeholder="Your name (e.g. Tunde from Lagos)">
+<input id="inpLocation" placeholder="Your city (e.g. Lagos, NG)">
+<textarea id="inpStory" rows="4" placeholder="What gave you joy today?"></textarea>
+<button class="publish" onclick="publishStory()">Publish to World 🌍</button>
+</div></div>
+<script>
+const colors=['#FF6B6B','#4ECDC4','#45B7D1','#FFA600','#96CEB4'];const initial=[
+{name:'Amara',loc:'Lagos, NG',type:'photo',text:'My small sister finally learned to ride bicycle today. She was shouting "I dey fly!" 😂',likes:42,loved:false,tag:'Family'},
+{name:'Kenji',loc:'Tokyo, JP',type:'line',text:'First coffee that actually tasted like hope this morning.',likes:18,loved:false,tag:'Small Wins'},
+{name:'Sofia',loc:'Bogota, CO',type:'text',text:'After 3 months of no sales, someone bought my handmade bag today. I cried in the market but na happy cry.',likes:89,loved:true,tag:'Work'},
+{name:'David',loc:'Berlin, DE',type:'photo',text:'Found this old man feeding pigeons and smiling like a child. Made my whole day.',likes:56,loved:false,tag:'Strangers'},
+{name:'Priya',loc:'Mumbai, IN',type:'text',text:'My mom dancing to old Bollywood song while cooking. Pure joy.',likes:124,loved:false,tag:'Family'},
+{name:'James',loc:'London, UK',type:'photo',text:'My dog waiting for me at the door like I was gone for 10 years (10 mins).',likes:102,loved:false,tag:'Pets'},
+];let stories=[...initial];let currentType='text';
+function render(filter='all'){const feed=document.getElementById('feed');let list=[...stories];if(filter==='today')list=list.slice(0,5);if(filter==='loved')list=list.sort((a,b)=>b.likes-a.likes);feed.innerHTML=list.map((s,i)=>`<div class="card"><div class="card-head"><div class="avatar" style="background:${colors[s.name.charCodeAt(0)%colors.length]}">${s.name[0]}</div><b>${s.name}</b> • ${s.loc} <span class="tag">${s.tag}</span></div>${s.type==='photo'?`<img src="https://picsum.photos/seed/${s.name+i}/400/300">`:''}${s.type==='text'||s.type==='photo'?`<div class="card-text">${s.text}</div>`:''}${s.type==='line'?`<div class="card-line">"${s.text}"</div>`:''}${s.type==='video'?`<div style="background:#111;color:white;border-radius:14px;padding:40px 20px;text-align:center;margin:8px 0">▶️ ${s.text}</div>`:''}<div class="card-actions"><button class="heart ${s.loved?'loved':''}" onclick="toggleLove(${i})">${s.loved?'❤️':'🤍'} ${s.likes}</button><span style="font-size:12px;color:#aaa">${s.type}</span></div></div>`).join('');}
+function openModal(t){currentType=t;document.getElementById('modal').classList.add('open')}function closeModal(){document.getElementById('modal').classList.remove('open')}
+function toggleLove(i){stories[i].loved=!stories[i].loved;stories[i].likes+=stories[i].loved?1:-1;render('all')}
+function publishStory(){const n=document.getElementById('inpName').value||'Anonymous';const l=document.getElementById('inpLocation').value||'Earth 🌍';const t=document.getElementById('inpStory').value;if(!t)return alert('Tell us your joy first!');stories.unshift({name:n.split(' ')[0],loc:l,text:t,type:currentType,likes:0,loved:false,tag:'New'});closeModal();document.getElementById('inpStory').value='';render('all');}
+function filterFeed(f,el){document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));el.classList.add('active');render(f)}render();
+</script>
+</body>
+</html>
