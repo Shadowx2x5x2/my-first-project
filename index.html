@@ -3,28 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pure Water vs Eva - BOLD EDITION</title>
+<title>Pure Water vs Eva - LAGOS SOUND EDITION</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Fredoka:wght@700;900&display=swap');
 body{margin:0;background:#0a0a0a;color:white;font-family:'Fredoka',sans-serif;overflow-x:hidden}
-h1{font-family:'Black Han Sans',sans-serif;font-size:38px;font-weight:900;text-align:center;text-transform:uppercase;letter-spacing:2px;text-shadow:4px 4px 0px #ff0066,8px 8px 0px #000;line-height:1.1;margin:15px 10px}
+h1{font-family:'Black Han Sans',sans-serif;font-size:36px;font-weight:900;text-align:center;text-transform:uppercase;letter-spacing:2px;text-shadow:4px 4px 0px #ff0066,8px 8px 0px #000;line-height:1.1;margin:15px 10px}
 .game-box{background:linear-gradient(180deg,#1a1a1a,#000);border:4px solid #ff0066;border-radius:20px;margin:15px;padding:20px;box-shadow:0 0 30px rgba(255,0,102,0.6)}
-.btn{width:100%;padding:18px;font-size:22px;font-weight:900;background:#ff0066;color:white;border:none;border-radius:12px;text-transform:uppercase;letter-spacing:1px;box-shadow:0 6px 0 #99003d}
-.score{font-size:28px;font-weight:900;text-align:center;color:#00ff88;text-shadow:2px 2px 0 #000}
+.btn{width:100%;padding:22px;font-size:26px;font-weight:900;background:#ff0066;color:white;border:none;border-radius:12px;text-transform:uppercase;letter-spacing:1px;box-shadow:0 6px 0 #99003d}
+.btn:active{transform:translateY(6px);box-shadow:none}
+.score{font-size:32px;font-weight:900;text-align:center;color:#00ff88;text-shadow:2px 2px 0 #000}
+.hustle{font-size:16px;text-align:center;color:#ffcc00;margin-top:10px;font-weight:900}
 </style>
 </head>
 <body>
-<h1>💧 PURE WATER VS EVA 💧<br>BOLD EDITION</h1>
+<h1>💧 PURE WATER VS EVA 💧<br>LAGOS HUSTLE</h1>
 <div class="game-box">
 <div class="score">SCORE: <span id="score">0</span></div>
 <br>
-<button class="btn" onclick="tap()">TAP TO WIN! 🔥</button>
-<br><br>
+<button class="btn" onclick="tapHustle()">TAP TO HUSTLE! 🗣️</button>
+<div class="hustle" id="shout">🔊 TAP TO HEAR: "PURE WATER! COLD MINERALS!"</div>
+<br>
 <div style="text-align:center;font-weight:900;font-size:18px;">SHADOWx2x5x2 - LAGOS EDITION 🇳🇬</div>
 </div>
+
 <script>
 let s=0;
-function tap(){s+=10;document.getElementById('score').innerText=s; if(navigator.vibrate) navigator.vibrate(50);}
+let audioCtx;
+
+function playBeep(freq, duration, type='sine'){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.frequency.value = freq;
+  osc.type = type;
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
+
+function speakLagos(text){
+  if('speechSynthesis' in window){
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1.2;
+    utter.pitch = 1.1;
+    utter.volume = 1;
+    speechSynthesis.speak(utter);
+  }
+}
+
+const shouts = [
+  "PURE WATER! COLD MINERALS!",
+  "BUY YOUR PURE WATER!",
+  "COLD EVA! COLD PURE WATER!",
+  "WATER! WATER! COLD WATER!",
+  "COME BUY AM! SWEET WATER!"
+];
+
+function tapHustle(){
+  s+=10;
+  document.getElementById('score').innerText=s;
+  if(navigator.vibrate) navigator.vibrate(60);
+  
+  // Sound effects - hustle beep
+  playBeep(300 + Math.random()*400, 0.15, 'square');
+  setTimeout(()=>playBeep(600, 0.1, 'sine'), 80);
+  
+  // Lagos shout every 3 taps
+  if(s % 30 === 0){
+    const shout = shouts[Math.floor(Math.random()*shouts.length)];
+    document.getElementById('shout').innerText = "🗣️ " + shout;
+    speakLagos(shout);
+  }
+  
+  // Traffic horn when score high
+  if(s % 100 === 0){
+    playBeep(150, 0.5, 'sawtooth');
+  }
+}
+
+// Auto traffic background hum on first tap
+let started = false;
+document.body.addEventListener('click', ()=>{
+  if(!started){
+    started = true;
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+}, {once:true});
 </script>
 </body>
 </html>
