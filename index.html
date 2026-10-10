@@ -1,74 +1,145 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shadowx2x5x2 Lab | Built On Phone In Lagos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SHADOW JARA - First Ever Pure Water Game 💧</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=JetBrains+Mono:wght@400;700&display=swap');
-body{margin:0;background:#07070a;color:#fff;font-family:'Space Grotesk',sans-serif}
-header{padding:50px 20px;text-align:center;background: radial-gradient(600px at 50% -10%, #7c3aed33, transparent), radial-gradient(400px at 90% 10%, #00ff8833, transparent)}
-h1{font-size:48px;line-height:0.9;margin:0} h1 span{background:linear-gradient(90deg,#00ff88,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.pill{display:inline-block;background:#1a1a1a;border:1px solid #333;border-radius:99px;padding:8px 16px;margin:6px;font-size:12px}
-.card{background:#111114;border:1px solid #222;border-radius:24px;padding:24px;margin:16px;text-align:left}
-.btn{display:block;width:100%;padding:16px;border-radius:16px;text-align:center;text-decoration:none;font-weight:800;margin:10px 0}
-.btn-primary{background:#fff;color:#000} .btn-neon{background:#00ff88;color:#000;box-shadow:0 0 30px #00ff8833}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.tool{background:#19191d;padding:18px;border-radius:18px;border:1px solid #222;text-align:center;cursor:pointer}
-#spin{font-size:60px;transition:1s cubic-bezier(.2,1,.3,1)}
-.badge{background:#00ff88;color:#000;font-size:10px;padding:3px 8px;border-radius:99px;font-weight:800}
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@700;900&display=swap');
+body{margin:0;background:#fef08a;font-family:'Fredoka';overflow:hidden}
+h1{margin:10px 0 0;text-align:center;font-size:34px;line-height:0.9;transform:rotate(-1deg)} h1 span{background:#000;color:#fef08a;padding:2px 10px;border-radius:10px}
+#hud{display:flex;justify-content:center;gap:8px;margin:8px}
+.pill{background:#fff;border:3px solid #000;border-radius:99px;padding:6px 12px;font-weight:900;box-shadow:3px 3px 0 #000;font-size:12px}
+#game{position:relative;width:100%;max-width:400px;height:72vh;max-height:640px;margin:0 auto;background:linear-gradient(#87ceeb,#fef08a);border:4px solid #000;border-radius:24px;box-shadow:8px 8px 0 #000;overflow:hidden}
+canvas{width:100%;height:100%;display:block}
+#overlay{position:absolute;inset:0;background:#fef08acc;backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
+.btn{padding:14px 24px;border-radius:99px;border:3px solid #000;font-weight:900;box-shadow:4px 4px 0 #000;cursor:pointer}
+.btn-y{background:#ffeb3b}.btn-b{background:#000;color:#fff}
+#tiltTip{position:absolute;bottom:10px;width:100%;text-align:center;font-size:11px;color:#000;opacity:0.6}
 </style>
 </head>
 <body>
+<h1>Pure Water<br><span>SHADOW JARA 💧</span></h1>
+<div id="hud"><div class="pill">💰 ₦<span id="naira">0</span></div><div class="pill">💧 <span id="waters">10</span>/10</div><div class="pill">BEST ₦<span id="best">0</span></div></div>
 
-<header>
-  <div class="pill">🔴 LIVE FROM LAGOS 🇳🇬 • BUILT 100% ON PHONE 📱</div>
-  <h1>SHADOW'S<br><span>LAB</span></h1>
-  <p style="color:#888;max-width:320px;margin:15px auto">I build addictive websites that make people stay & pay. No laptop needed.</p>
-  <div style="margin-top:10px"><span class="pill">⚡ Fast</span><span class="pill">💰 Money-Making</span><span class="pill">🔥 Fun</span></div>
-</header>
-
-<div class="card" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-color:#7c3aed55">
-  <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">🎁 DAILY LUCK SPIN</h3><span class="badge">ADDICTIVE</span></div>
-  <p style="color:#aaa;font-size:13px">Spin everyday, get motivation + secret 10% OFF</p>
-  <div style="text-align:center;padding:18px 0"><div id="spin">🎡</div><div id="spinText" style="font-family:'JetBrains Mono';color:#00ff88;margin-top:10px;font-weight:700">TAP TO WIN</div></div>
-  <a class="btn btn-neon" id="spinBtn" onclick="doSpin()">SPIN NOW →</a>
+<div id="game">
+<canvas id="c" width="400" height="640"></canvas>
+<div id="overlay">
+<div style="font-size:80px">💧👩🏾‍🦱</div>
+<h2 style="margin:8px 0">WORLD FIRST GAME!</h2>
+<p style="font-size:13px;color:#333;margin:0 0 10px">No one has played this before!<br>Balance pure water for head. Tilt phone or drag to balance.<br>Sell for traffic, dodge okada!</p>
+<button class="btn btn-y" onclick="start()">▶️ START HUSTLE</button>
+<p style="font-size:10px;color:#666;margin-top:8px">🎮 Tilt phone left/right OR drag finger<br>Invented by Shadowx2x5x2 in Lagos</p>
+</div>
+<div id="tiltTip">👉 Tilt phone or drag to balance</div>
+</div>
 </div>
 
-<div class="grid" style="margin:0 16px">
-  <div class="tool" onclick="genBio()">✨<br><b>Viral Bio</b><br><small style="color:#888">For IG/TikTok</small></div>
-  <div class="tool" onclick="genName()">🔥<br><b>Username</b><br><small style="color:#888">No dulling</small></div>
-  <div class="tool" onclick="genQuote()">💭<br><b>Hustle Quote</b><br><small style="color:#888">Daily fuel</small></div>
-  <div class="tool" onclick="tapGame()" style="border-color:#00ff88">🎮<br><b>Tap Rush</b><br><small style="color:#00ff88" id="high">Best: 0</small></div>
+<div style="max-width:400px;margin:10px auto;background:#fff;border:3px solid #000;border-radius:18px;padding:12px;text-align:center;box-shadow:4px 4px 0 #000">
+<b>🔥 Why this go blow?</b><br><span style="font-size:12px;color:#555">First ever Lagos hawker game. Every Nigerian relates! Old mama go play, small pikin go laugh. Share am!</span><br>
+<a id="share" href="#" style="display:inline-block;margin-top:8px;background:#000;color:#fff;padding:10px 18px;border-radius:99px;text-decoration:none;font-weight:900;font-size:13px">Share My Hustle 💧</a>
 </div>
-
-<div class="card" style="border-color:#00ff8844">
-  <h2 style="margin:0 0 8px">🚀 I Will Build For You</h2>
-  <p style="color:#999;font-size:14px;margin:0 0 16px">Lagos to the world. I deliver in 24hrs, from my phone. You see am live before balance.</p>
-  <div style="display:flex;justify-content:space-between;background:#0f0f10;padding:14px;border-radius:12px;margin:8px 0"><span>⚡ Link-in-Bio (like Linktree)</span><b style="color:#00ff88">₦7k</b></div>
-  <div style="display:flex;justify-content:space-between;background:#0f0f10;padding:14px;border-radius:12px;margin:8px 0"><span>🌐 Business Website</span><b style="color:#00ff88">₦35k</b></div>
-  <div style="display:flex;justify-content:space-between;background:#161616;padding:14px;border-radius:12px;margin:8px 0;border:1px dashed #00ff88"><span>🔥 This Playground Style</span><b style="color:#00ff88">₦50k</b></div>
-  <a class="btn btn-primary" href="https://wa.me/2349031498864?text=BOSS%20Shadow!%20I%20want%20website%20like%20yours%20🔥%20-%20From%20your%20site">💬 HIRE ME ON WHATSAPP</a>
-  <p style="text-align:center;color:#666;font-size:11px">⚡ Replies in 5 mins • 23+ sites delivered • Pay 50% to start</p>
-</div>
-
-<div class="card" style="text-align:center">
-  <h3 style="margin:0">👀 How I Built This On Phone</h3>
-  <p style="color:#888;font-size:14px">No laptop. Just GitHub + guts. I teach people too.</p>
-  <a class="btn" style="background:#222;color:#fff" href="https://wa.me/2349031498864?text=I%20want%20to%20LEARN%20how%20to%20build%20website%20on%20phone">📚 DM "LEARN" TO JOIN CLASS</a>
-  <a class="btn" style="background:#111;color:#777;border:1px solid #222" href="https://github.com/shadowx2x5x2">⭐ GitHub: shadowx2x5x2</a>
-</div>
-
-<p style="text-align:center;color:#333;font-size:11px;padding:30px">© SHADOWX2X5X2 LAB • LAGOS 2026<br>Built with ❤️ on phone • <span id="views">1,892</span> views today 👀</p>
 
 <script>
-const msgs=["You go blow! Keep building! 🚀","Client dey come this week! 💰","No dull! Your site better pass 90% of devs","Today na your day! Post am! 🔥","Omo you be guru! 😎","Small small e go big! Trust process 🙏"];
-let best=localStorage.getItem('shadow_best')||0; document.getElementById('high').innerText="Best: "+best;
-function doSpin(){document.getElementById('spin').style.transform='rotate('+ (720+Math.random()*720)+'deg)'; setTimeout(()=>{const m=msgs[Math.floor(Math.random()*msgs.length)]; document.getElementById('spinText').innerHTML=m+"<br><small style='color:#fff'>+ 10% OFF if you order today!</small>"; document.getElementById('spinBtn').innerHTML="SHARE WIN & CLAIM DISCOUNT →"; document.getElementById('spinBtn').href="https://wa.me/2349031498864?text=BOSS!%20I%20spun%20and%20won:%20"+encodeURIComponent(m)+"%20on%20your%20site!%20I%20want%20discount%20🙏%20"+location.href;},900);}
-function genBio(){const b=["Lagos boy | Building future from phone 📱| DM for websites ₦7k+","CEO of vibes & code 💻✨ | Shadow Lab • Hire me: 09031498864","I turn 0 to 1 🚀 | No laptop, just guts | Websites from ₦7k"];alert("🔥 VIRAL BIO:\n\n"+b[Math.floor(Math.random()*b.length)]+"\n\n(Copied! Paste for IG)");}
-function genName(){const n=["shadow"+Math.floor(Math.random()*9999),"lagos_hustler_x","the_real_shadowx","shadow_lab_"+Math.floor(Math.random()*99)];alert("✨ USERNAME:\n\n@"+n[Math.floor(Math.random()*n.length)]);}
-function genQuote(){alert("💭 "+msgs[Math.floor(Math.random()*msgs.length)]);}
-function tapGame(){let s=0; const start=Date.now(); const id=setInterval(()=>{s++; if(Date.now()-start>3000){clearInterval(id); if(s>best){best=s; localStorage.setItem('shadow_best',best); document.getElementById('high').innerText="Best: "+best;} alert("🔥 Score: "+s+" taps in 3s! Best: "+best+"\n\nShare your score!");}},10); alert("TAP GAME! Tap OK and then tap as fast as you can for 3 seconds! GO!");}
-document.getElementById('views').innerText=Math.floor(1800+Math.random()*400);
+const canvas=document.getElementById('c'), ctx=canvas.getContext('2d');
+let tilt=0, trayX=200, trayAngle=0, waters=[], naira=0, best=parseInt(localStorage.getItem('jara_best')||0), running=false, time=0;
+document.getElementById('best').innerText=best;
+
+class Water{constructor(x){this.x=x;this.y=-10;this.vy=0;this.vx=(Math.random()-0.5)*0.5;this.onTray=true;this.offX=x-200;}}
+
+function start(){
+document.getElementById('overlay').style.display='none';
+waters=[]; for(let i=0;i<10;i++) waters.push(new Water(180+i*8));
+naira=0; trayX=200; trayAngle=0; time=0; running=true;
+loop();
+}
+
+function loop(){
+if(!running) return;
+time+=0.016;
+ctx.clearRect(0,0,400,640);
+
+// road
+ctx.fillStyle='#333'; ctx.fillRect(0,500,400,140);
+ctx.strokeStyle='#fff'; ctx.setLineDash([20,20]); ctx.beginPath(); ctx.moveTo(0,570); ctx.lineTo(400,570); ctx.stroke(); ctx.setLineDash([]);
+
+// moving danfo shakes
+let shake=Math.sin(time*2)*tilt*0.5;
+trayAngle=tilt*0.15;
+trayX+=tilt*0.8; trayX=Math.max(60,Math.min(340,trayX));
+
+// tray
+ctx.save(); ctx.translate(trayX, 420+shake); ctx.rotate(trayAngle);
+ctx.fillStyle='#8B4513'; ctx.fillRect(-60,-8,120,12); ctx.fillStyle='#000'; ctx.fillRect(-60,-8,120,12); ctx.strokeRect(-60,-8,120,12);
+ctx.restore();
+
+// waters physics
+let alive=0;
+waters.forEach(w=>{
+if(w.onTray){
+w.x=trayX+w.offX + trayAngle*30;
+w.y=400+shake - 12;
+w.vx+=trayAngle*0.1 + tilt*0.02;
+if(Math.abs(trayAngle)>0.4 || Math.abs(tilt)>15){ if(Math.random()<0.05) w.onTray=false; }
+alive++;
+} else {
+w.vy+=0.4; w.y+=w.vy; w.x+=w.vx;
+ctx.fillStyle='#00aaffaa'; ctx.beginPath(); ctx.arc(w.x,w.y,10,0,Math.PI*2); ctx.fill();
+if(w.y>640) w.y=700;
+}
+if(w.onTray){
+ctx.fillStyle=w.y<410?'#00e5ff':'#a0f0ff'; ctx.strokeStyle='#000'; ctx.lineWidth=1;
+ctx.beginPath(); ctx.roundRect(w.x-8,w.y-14,16,14,3); ctx.fill(); ctx.stroke();
+}
+});
+
+// cars (obstacles) make tilt
+if(Math.random()<0.02){ tilt+=(Math.random()-0.5)*10; }
+
+// customers - throw naira
+if(Math.random()<0.03 && alive>0){
+let nx=trayX+(Math.random()-0.5)*80;
+naira+=50;
+let el=document.createElement('div'); el.style.position='absolute'; el.style.left=nx+'px'; el.style.top='200px'; el.style.fontWeight='900'; el.innerText='+₦50'; el.style.animation='fly 0.8s forwards'; document.getElementById('game').appendChild(el); setTimeout(()=>el.remove(),800);
+document.getElementById('naira').innerText=naira;
+if(naira>best){best=naira; localStorage.setItem('jara_best',best); document.getElementById('best').innerText=best;}
+if(navigator.vibrate) navigator.vibrate(20);
+}
+
+document.getElementById('waters').innerText=alive;
+document.getElementById('share').href=`https://wa.me/2349031498864?text=I%20made%20₦${naira}%20selling%20pure%20water%20for%20traffic%20💧%20Play%20the%20WORLD%20FIRST%20game%20👉%20${location.href}`;
+
+if(alive===0){ gameOver(); return; }
+
+ctx.fillStyle='#000'; ctx.font='bold 12px Fredoka'; ctx.fillText('TILT: '+Math.round(tilt),10,20);
+requestAnimationFrame(loop);
+}
+
+function gameOver(){
+running=false;
+let ov=document.getElementById('overlay'); ov.style.display='flex';
+ov.innerHTML=`<div style="font-size:60px">😭💧</div><h2>Water Don Pour!</h2><p>You hustle ₦${naira} for ${Math.floor(time)}s<br>${naira>500?'You be Oshodi Champion! 👑':'Try again, balance better!'}</p><button class="btn btn-y" onclick="start()">🔄 Hustle Again</button><a href="https://wa.me/2349031498864?text=I%20made%20₦${naira}%20for%20SHADOW%20JARA%20💧%20${location.href}" style="margin-top:10px;background:#000;color:#fff;padding:10px 18px;border-radius:99px;text-decoration:none;font-weight:900;display:inline-block">Share Hustle 💧</a>`;
+}
+
+// controls
+let startX=0;
+canvas.addEventListener('touchstart',e=>{startX=e.touches[0].clientX});
+canvas.addEventListener('touchmove',e=>{
+e.preventDefault();
+let dx=(e.touches[0].clientX-startX)*0.1;
+tilt+=dx*0.2; startX=e.touches[0].clientX;
+},{passive:false});
+
+window.addEventListener('deviceorientation',e=>{
+if(e.gamma) tilt=e.gamma*0.3;
+});
+
+// mouse fallback
+canvas.addEventListener('mousemove',e=>{
+let rect=canvas.getBoundingClientRect();
+let mx=(e.clientX-rect.left)/rect.width*400;
+tilt=(mx-trayX)*0.1;
+});
 </script>
+<style>@keyframes fly{to{transform:translateY(-50px);opacity:0}}</style>
 </body>
 </html>
